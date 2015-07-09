@@ -3,7 +3,7 @@ import random
 from tree import Tree
 from prim import Prim
 from var import Var
-
+from copy import deepcopy
 
 class Indiv(object):
 
@@ -47,3 +47,15 @@ class Indiv(object):
         lines = []
         self._str_recursion(lines, self.tree.root, 0)
         return "\n".join(lines)
+
+    def __copy__(self):
+        new = type(self)()
+        new.tree = self.tree
+        return new
+
+    def __deepcopy__(self, memo):
+        new = type(self)()
+        if not self.tree in memo:
+            memo[self.tree] = deepcopy(self.tree, memo)
+        new.tree = memo[self.tree]
+        return new
