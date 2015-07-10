@@ -1,4 +1,4 @@
-from prim import Prim
+from .prim import Prim
 from copy import deepcopy
 
 

@@ -2,6 +2,7 @@ from indiv import Indiv, Var, mutation, reproduction, crossover
 from tree import Tree
 from copy import deepcopy
 from prim import primitive_list
+from gp import GP
 
 
 def add(x, y):
@@ -21,6 +22,10 @@ def div(x, y):
 
 terminals = primitive_list([-5, -4, -3, 0, Var("x")])
 functions = primitive_list([add, sub, mul, div])
+
+
+def fitness(indiv, config):
+    return abs(indiv.eval({'x': 8}) - 55)
 
 
 def test1():
@@ -44,3 +49,9 @@ def test3():
     d, e = crossover(b, c, 6)
 
     return a, b, c, d, e
+
+
+def test4():
+    system = GP(terminals, functions, fitness)
+    system.init_population()
+    return system.run(3)

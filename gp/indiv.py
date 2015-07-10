@@ -1,7 +1,7 @@
 import random
 
-from tree import Tree
-from var import Var
+from .tree import Tree
+from .var import Var
 from copy import deepcopy
 
 
@@ -32,12 +32,15 @@ class Indiv(object):
         terminals are left as leaves. If the function reaches the last level
         allowed by max_depth, it picks randomly from a pool of only terminals.
 
+        Returns a reference to self.
+
         parent -- parent of the new branch to be generated.
         terminals -- list of terminal primitives.
         functions -- list of function primitives.
         max_depth -- maximum depth of the branch to be generated."""
         self._grow_recursion(
             parent, 1, max_depth, terminals + functions, terminals)
+        return self
 
     def _eval_recursion(self, parent, variables):
         """Recursive procedure used to traverse the tree and evaluate it."""
@@ -55,6 +58,24 @@ class Indiv(object):
         variables -- dictionary indexed by the individual's variables' labels.
                      Contains each variable's value for this evaluation."""
         return self._eval_recursion(self.tree.root, variables)
+
+    def mutate(self, terminals, functions, depth, max_depth):
+        """Mutates an existing individual through grow.
+
+        Two depth values are passed to this function. The smallest one is con-
+        sidered, so as not to violate any properties.
+
+        a -- individual to be mutated.
+        terminals -- list of terminal primitives.
+        functions -- list of function primitives.
+        depth -- maximum depth of the branch to be generated.
+        max_depth -- maximum depth of an individual after mutation."""
+        swap_node = random.choice(self.tree.nodes)
+        parent = swap_node.parent
+        self.tree.remove(swap_node)
+        parent_depth = 0 if not parent else parent.depth
+        mutation_depth = min(depth, max_depth - parent_depth - 1)
+        self.grow(parent, terminals, functions, mutation_depth)
 
     def _str_recursion(self, lines, parent, depth):
         """Traverses the tree and computes each node's string, for __str__."""
@@ -133,7 +154,7 @@ def swap_branches(tree_a, swap_a, tree_b, swap_b):
     if tree_a.root == swap_a:
         tree_a.root = swap_b
         swap_b.update_branch_depth(0)
-    else:
+    else:  # If a node is root, it has no parent
         swap_b.parent.children.remove(swap_a)
         swap_b.parent.children.append(swap_b)
         swap_b.update_branch_depth(swap_b.parent.depth + 1)
@@ -151,11 +172,13 @@ def swap_branches(tree_a, swap_a, tree_b, swap_b):
     nodes_in_b = []
     gather_branch(swap_b, nodes_in_b)
 
+    # Removes references to branches in their previous trees
     for node in nodes_in_a:
         tree_a.nodes.remove(node)
     for node in nodes_in_b:
         tree_b.nodes.remove(node)
 
+    # Adds them to their new trees
     tree_b.nodes.extend(nodes_in_a)
     tree_a.nodes.extend(nodes_in_b)
 
@@ -190,12 +213,7 @@ def mutation(a, terminals, functions, depth, max_depth):
     depth -- maximum depth of the branch to be generated.
     max_depth -- maximum depth of an individual after mutation."""
     new = deepcopy(a)
-    swap_node = random.choice(new.tree.nodes)
-    parent = swap_node.parent
-    new.tree.remove(swap_node)
-    parent_depth = 0 if not parent else parent.depth
-    mutation_depth = min(depth, max_depth - parent_depth - 1)
-    new.grow(parent, terminals, functions, mutation_depth)
+    new.mutate(terminals, functions, depth, max_depth)
     return new
 
 
