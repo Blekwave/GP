@@ -44,9 +44,13 @@ def fitness(indiv, config):
     return error
 
 config = {
-    "POP_SIZE": 100,
-    "NUM_GENS": 20,
+    "POP_SIZE": 150,
+    "NUM_GENS": 70,
+    "MAX_DEPTH": 6,
+    "MAX_INITIAL_DEPTH": 4,
+    "MAX_MUTATION_DEPTH": 3,
     "TOURNAMENT_SIZE": 4,
+    "MUTATION_PROB": 0.1,
     "training_cases": training_cases
 }
 

@@ -115,7 +115,7 @@ class GP(object):
                                         fitness)
                     b = self.tournament(participants[self.tournament_size:],
                                         fitness)
-                    new = crossover(a, b, self.max_depth)  # Returns tuple
+                    new = crossover(a, b, self.max_depth)  # Returns list
                 else:  # Reproduction
                     participants = random.sample(range(self.pop_size),
                                                  self.tournament_size)

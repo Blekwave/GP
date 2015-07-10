@@ -192,14 +192,22 @@ def crossover(a, b, max_depth):
     new_a, new_b = deepcopy(a), deepcopy(b)
     swap_a = random.choice(new_a.tree.nodes)
 
-    valid_in_b = []
-    gather_branches_limited(new_b.tree.root, valid_in_b,
-                            max_depth - swap_a.depth - 1)
+    # valid_in_b = []
+    # gather_branches_limited(new_b.tree.root, valid_in_b,
+    #                         max_depth - swap_a.depth - 1)
 
-    swap_b = random.choice(valid_in_b)
+    # swap_b = random.choice(valid_in_b)
+    
+    swap_b = random.choice(new_b.tree.nodes)
     swap_branches(new_a.tree, swap_a, new_b.tree, swap_b)
-    return new_a, new_b
 
+    if branch_depth(new_a.tree.root) < max_depth:
+        if branch_depth(new_b.tree.root) < max_depth:
+            return [new_a, new_b]
+        else:
+            return [new_a]
+    else:
+        return [new_b]
 
 def mutation(a, terminals, functions, depth, max_depth):
     """Generates a new individual by mutating an existing one through grow.
