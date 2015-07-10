@@ -59,3 +59,16 @@ class Indiv(object):
             memo[self.tree] = deepcopy(self.tree, memo)
         new.tree = memo[self.tree]
         return new
+
+
+
+def mutation(a, terminals, functions, depth, max_depth):
+    # Bug: deveria criar novo indivíduo
+    swap_node = random.choice(a.tree.nodes)
+    parent = swap_node.parent
+    a.tree.remove(swap_node)
+    mutation_depth = min(depth, max_depth - parent.depth() - 1)
+    a.grow(parent, terminals, functions, mutation_depth)
+
+def reproduction(a):
+    return deepcopy(a)
