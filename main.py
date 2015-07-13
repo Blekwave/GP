@@ -44,8 +44,8 @@ def fitness(indiv, config):
     return error
 
 config = {
-    "POP_SIZE": 150,
-    "NUM_GENS": 70,
+    "POP_SIZE": 300,
+    "NUM_GENS": 100,
     "MAX_DEPTH": 6,
     "MAX_INITIAL_DEPTH": 4,
     "MAX_MUTATION_DEPTH": 3,
@@ -53,6 +53,7 @@ config = {
     "MUTATION_PROB": 0.1,
     "training_cases": training_cases
 }
+
 
 def forge_perfect():
     p = Indiv()
@@ -62,6 +63,7 @@ def forge_perfect():
     p.tree.add_child(Var('x'), mul_node)
     p.tree.add_child(Prim(2), div_node)
     return p
+
 
 def print_results(result, training_cases):
     error_sum = 0
